@@ -1,4 +1,5 @@
 from selenium import webdriver
+from selenium.webdriver.common.keys import Keys
 import unittest
 
 
@@ -19,20 +20,37 @@ class NewVisitorTest(unittest.TestCase):
 		# urgent lists. She decides to estimate it's home page
 		self.browser.get('http://localhost:8000') # Переходим по ссылке
 
-		# SHe sees that title and header of the page say about urgent lists
+		# She sees that title and header of the page say about urgent lists
 		self.assertIn('To-Do', self.browser.title) #  проверяем наличие To-DO  в тайтле
-		self.fail('Finish the test!')
-		
+		header_text = self.browser.find_element_by_tag_name('h1').text
+		self.assertIn('To-Do', header_text)
+
 		# She is immedeatly offered to enter list's element
+		inputbox = self.browser.find_element_by_id('id_new_item')
+		self.assertEqual(
+			inputbox.get_attribute('placeholder'),
+			'Enter a to-do item'
+		)
 
 		# She types in the text area "Buy peacock feather"
 		# her hobby is knitting fishing flies
+		inputbox.send_keys('Buy peacock feather')
 
 		# When she pushes enter, the page is being updated. And now the page
 		# contains "1: Buy peacock feather"
-		# Edit is very methodical
+		inputbox.send_keys(Keys.ENTER)
+		time.sleep(1)
 
-		# THe page is being updated again. And now it shows both elements of her list
+		table = self.browser.find_element_by_id('id_list_table')
+		rows = table.find_elements_by_tag_name('tr')
+		self.assertTrue(
+			any(row.text == '1: Buy peacock fether')
+		)
+		# Textarea is still invites her to add one more element
+		# She enters "Make fly out of peacock fethers"
+		# Edit is very methodical
+		self.fail('Finish the test!')
+		# The page is being updated again. And now it shows both elements of her list
 
 		# EDit wonders if the site remembers her list. Next she sees that
 		# the site generated for her unique YRL-address. A short text with explanations
