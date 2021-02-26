@@ -15,6 +15,13 @@ class NewVisitorTest(unittest.TestCase):
 		'''dismantling'''
 		self.browser.quit()
 
+	def check_for_row_in_list_table(self, row_text):
+		'''подвтерждение строки в таблице списка'''
+		table = self.browser.find_element_by_id('id_list_table')
+		rows = table.find_elements_by_tag_name('tr')
+		self.assertIn(row_text, [row.text for row in rows])
+	
+
 	def test_can_start_a_list_and_retrieve_it_later(self):
 		'''тест: может начать и список и получить его позже'''
 		# Edit heard about a cool new online-application with
@@ -42,10 +49,8 @@ class NewVisitorTest(unittest.TestCase):
 		inputbox.send_keys(Keys.ENTER)
 		time.sleep(1)
 
-		table = self.browser.find_element_by_id('id_list_table')
-		rows = table.find_elements_by_tag_name('tr')
-		self.assertIn('1: Buy peacock feather', [row.text for row in rows])
-	
+		self.check_for_row_in_list_table('1: Buy peacock feather')
+		
 		# Textarea is still invites her to add one more element
 		# She enters "Make fly out of peacock fethers"
 		# Edit is very methodical
@@ -54,11 +59,9 @@ class NewVisitorTest(unittest.TestCase):
 		inputbox.send_keys(Keys.ENTER)
 		time.sleep(1)
 
-		# The page is being updated again. And now it shows both elements of her list
-		table = self.browser.find_element_by_id('id_list_table')
-		rows = table.find_elements_by_tag_name('tr')
-		self.assertIn('1: Buy peacock feather', [row.text for row in rows])
-		self.assertIn('2: Make fly out of peacock fethers', [row.text for row in rows])
+		# The page is being updated again. And now it shows both elements of her list	
+		self.check_for_row_in_list_table('1: Buy peacock feather')
+		self.check_for_row_in_list_table('2: Make fly out of peacock fethers')
 		
 
 		# EDit wonders if the site remembers her list. Next she sees that
