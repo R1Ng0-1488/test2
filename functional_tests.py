@@ -44,23 +44,31 @@ class NewVisitorTest(unittest.TestCase):
 
 		table = self.browser.find_element_by_id('id_list_table')
 		rows = table.find_elements_by_tag_name('tr')
-		self.assertTrue(
-			any(row.text == '1: Buy peacock fether' for row in rows),
-			"A new list's element didn't appeare in the table"
-		)
+		self.assertIn('1: Buy peacock feather', [row.text for row in rows])
+	
 		# Textarea is still invites her to add one more element
 		# She enters "Make fly out of peacock fethers"
 		# Edit is very methodical
-		self.fail('Finish the test!')
+		inputbox = self.browser.find_element_by_id('id_new_item')
+		inputbox.send_keys("Make fly out of peacock fethers")
+		inputbox.send_keys(Keys.ENTER)
+		time.sleep(1)
+
 		# The page is being updated again. And now it shows both elements of her list
+		table = self.browser.find_element_by_id('id_list_table')
+		rows = table.find_elements_by_tag_name('tr')
+		self.assertIn('1: Buy peacock feather', [row.text for row in rows])
+		self.assertIn('2: Make fly out of peacock fethers', [row.text for row in rows])
+		
 
 		# EDit wonders if the site remembers her list. Next she sees that
-		# the site generated for her unique YRL-address. A short text with explanations
+		# the site generated for her unique URL-address. A short text with explanations
 		# is displayed about this
+		self.fail('Finish the test!')
 
 		# She visits this URL-address - her list is still there
 
-		# She is satisfied goes to sleep again
+		# She is satisfied and goes to sleep again
 		
 
 if __name__ == '__main__':
