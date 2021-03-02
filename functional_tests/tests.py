@@ -1,10 +1,11 @@
 from selenium import webdriver
 from selenium.webdriver.common.keys import Keys
+from django.test import LiveServerTestCase
 import unittest
 import time
 
 
-class NewVisitorTest(unittest.TestCase):
+class NewVisitorTest(LiveServerTestCase):
 	'''new visitor test'''
 
 	def setUp(self):
@@ -26,7 +27,7 @@ class NewVisitorTest(unittest.TestCase):
 		'''тест: может начать и список и получить его позже'''
 		# Edit heard about a cool new online-application with
 		# urgent lists. She decides to estimate it's home page
-		self.browser.get('http://localhost:8000') # Переходим по ссылке
+		self.browser.get(self.live_server_url) # Переходим по ссылке
 
 		# She sees that title and header of the page say about urgent lists
 		self.assertIn('To-Do', self.browser.title) #  проверяем наличие To-DO  в тайтле
@@ -72,7 +73,3 @@ class NewVisitorTest(unittest.TestCase):
 		# She visits this URL-address - her list is still there
 
 		# She is satisfied and goes to sleep again
-		
-
-if __name__ == '__main__':
-	unittest.main(warnings='ignore')
