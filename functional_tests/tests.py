@@ -5,6 +5,7 @@ from selenium.common.exceptions import WebDriverException
 from django.contrib.staticfiles.testing import StaticLiveServerTestCase
 import unittest
 import time
+import os
 
 
 MAX_WAIT = 10
@@ -16,6 +17,9 @@ class NewVisitorTest(StaticLiveServerTestCase):
 	def setUp(self):
 		'''instalation'''
 		self.browser = webdriver.Firefox() # Включаем браузер
+		staging_server = os.environ.get('STAGING_SERVER')
+		if staging_server:
+			self.live_server_url = 'http://' + staging_server
 
 	def tearDown(self):
 		'''dismantling'''
