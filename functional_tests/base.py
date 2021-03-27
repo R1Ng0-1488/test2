@@ -23,6 +23,18 @@ class FunctionalTest(StaticLiveServerTestCase):
 		'''dismantling'''
 		self.browser.quit()
 
+	def wait_for(self, fn):
+		'''ожидание'''
+		start_time = time.time()
+		while True:
+			try:
+				return fn()
+			except (AssertionError, WebDriverException) as e:
+				if time.time() - start_time > MAX_WAIT:
+					raise e
+				time.sleep(0.5)
+
+
 	def wait_for_row_in_list_table(self, row_text):
 		'''ожидание строки в таблице списка'''
 		start_time = time.time()
