@@ -14,10 +14,10 @@ class FunctionalTest(StaticLiveServerTestCase):
 
 	def setUp(self):
 		'''instalation'''
-		firefox_options = webdriver.FirefoxOptions()
-		firefox_options.binary_location = r'C:\\Program Files\\Mozilla Firefox\\firefox.exe'
+		self.firefox_options = webdriver.FirefoxOptions()
+		self.firefox_options.binary_location = r'C:\\Program Files\\Mozilla Firefox\\firefox.exe'
 
-		self.browser = webdriver.Firefox(options=firefox_options) # Включаем браузер
+		self.browser = webdriver.Firefox(options=self.firefox_options) # Включаем браузер
 		staging_server = os.environ.get('STAGING_SERVER')
 		if staging_server:
 			self.live_server_url = 'http://' + staging_server

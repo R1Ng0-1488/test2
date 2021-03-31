@@ -74,7 +74,7 @@ class NewVisitorTest(FunctionalTest):
 		## We use a new browser session so we provide that
 		## no Edith information won't come through the data, cookie etc.
 		self.browser.quit()
-		self.browser = webdriver.Firefox()
+		self.browser = webdriver.Firefox(options=self.firefox_options)
 
 		# Frencis visits a home page. There are no Edith list signs
 		self.browser.get(self.live_server_url)
