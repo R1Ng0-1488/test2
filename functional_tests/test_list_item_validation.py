@@ -14,27 +14,36 @@ class ItemValidationTest(FunctionalTest):
 		self.browser.get(self.live_server_url)
 		self.get_item_input_box().send_keys(Keys.ENTER)
 
-		# Home page is updating and error message appears
-		# that says that the list items should not be empty
-		self.wait_for(lambda: self.assertEqual(
-			self.browser.find_element_by_css_selector('.has-error').text,
-			"You can't have an empty list item"
+		# browser interсepts the request and does not load the page with list
+		self.wait_for(lambda: self.browser.find_elements_by_css_selector(
+			'#id_text:invalid'
 		))
-		# She tries again. Now with some text for item and now is working
+
+		# She starts typing the text of the new item and error disappears
 		self.get_item_input_box().send_keys('Buy Milk')
+		self.wait_for(lambda: self.browser.find_elements_by_css_selector(
+			'#id_text:valid'
+		))
+
+		# and she can send it successfully
 		self.get_item_input_box().send_keys(Keys.ENTER)
 		self.wait_for_row_in_list_table('1: Buy Milk')
 
 		# As strange as it may seem. Edit decides to send the second empty list item
 		self.get_item_input_box().send_keys(Keys.ENTER)
 
-		# She gets a similar warning on the list page
-		self.wait_for(lambda: self.assertEqual(
-			self.browser.find_element_by_css_selector('.has-error').text,
-			"You can't have an empty list item"
+		# and again the browser won't be obey
+		self.wait_for_row_in_list_table('1: Buy Milk')
+		self.wait_for(lambda: self.browser.find_elements_by_css_selector(
+			'#id_text:invalid'
 		))
+
+		
 		# And she can correct it by filling the fields with some text
 		self.get_item_input_box().send_keys('Make tea')
+		self.wait_for(lambda: self.browser.find_elements_by_css_selector(
+			'#id_text:valid'
+		))
 		self.get_item_input_box().send_keys(Keys.ENTER)
 		self.wait_for_row_in_list_table('1: Buy Milk')
 		self.wait_for_row_in_list_table('2: Make tea')
