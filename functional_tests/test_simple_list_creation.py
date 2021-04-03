@@ -19,7 +19,7 @@ class NewVisitorTest(FunctionalTest):
 		self.assertIn('To-Do', header_text)
 
 		# She is immedeatly offered to enter list's element
-		inputbox = self.browser.find_element_by_id('id_new_item')
+		inputbox = self.get_item_input_box()
 		self.assertEqual(
 			inputbox.get_attribute('placeholder'),
 			'Enter a to-do item'
@@ -38,7 +38,7 @@ class NewVisitorTest(FunctionalTest):
 		# Textarea is still invites her to add one more element
 		# She enters "Make fly out of peacock fethers"
 		# Edit is very methodical
-		inputbox = self.browser.find_element_by_id('id_new_item')
+		inputbox = self.get_item_input_box()
 		inputbox.send_keys("Make fly out of peacock fethers")
 		inputbox.send_keys(Keys.ENTER)
 		
@@ -60,7 +60,7 @@ class NewVisitorTest(FunctionalTest):
 
 		# Edit starts a new list
 		self.browser.get(self.live_server_url)
-		inputbox = self.browser.find_element_by_id('id_new_item')
+		inputbox = self.get_item_input_box()
 		inputbox.send_keys('Buy peacock feathers')
 		inputbox.send_keys(Keys.ENTER)
 		self.wait_for_row_in_list_table('1: Buy peacock feathers')
@@ -84,7 +84,7 @@ class NewVisitorTest(FunctionalTest):
 
 		# Francis starts a new list entering a new element. It is less interesting
 		# than Edith list
-		inputbox = self.browser.find_element_by_id('id_new_item')
+		inputbox = self.get_item_input_box()
 		inputbox.send_keys('Buy milk')
 		inputbox.send_keys(Keys.ENTER)
 		self.wait_for_row_in_list_table('1: Buy milk')
