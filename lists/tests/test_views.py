@@ -7,7 +7,10 @@ from unittest import skip
 
 from lists.views import home_page
 from lists.models import Item, List
-from lists.forms import ItemForm, EMPTY_ITEM_ERROR
+from lists.forms import (
+	ItemForm, EMPTY_ITEM_ERROR,
+	ExistingListItemForm, DUPLICATION_ITEM_ERROR
+)
 # Create your tests here.
 
 
@@ -103,10 +106,10 @@ class ListViewTest(TestCase):
 		self.assertEqual(response.status_code, 200)
 		self.assertTemplateUsed(response, 'list.html')
 
-	def test_invalid_input_passes_form_to_template(self):
+	def test_for_invalid_input_passes_form_to_template(self):
 		'''тест на недопустимый ввод форма передается в шаблон'''
 		response = self.post_invalid_input()
-		self.assertIsInstance(response.context['form'], ItemForm)
+		self.assertIsInstance(response.context['form'], ExistingListItemForm)
 
 	def test_for_invalid_input_shows_error_on_page(self):
 		'''тест на недопустимый ввод: на странице показывается ошибка'''
@@ -117,10 +120,9 @@ class ListViewTest(TestCase):
 		'''тест отображает формы для элемента'''
 		list_ = List.objects.create()
 		response = self.client.get(f'/lists/{list_.id}/')
-		self.assertIsInstance(response.context['form'], ItemForm)
+		self.assertIsInstance(response.context['form'], ExistingListItemForm)
 		self.assertContains(response, 'name="text"')
 
-	@skip
 	def test_duplicate_item_validation_errors_end_up_on_lists_page(self):
 		'''тест: ошибки валидации повторябщегося элемента оканчиваются
 		на странице списков'''
@@ -131,7 +133,7 @@ class ListViewTest(TestCase):
 			data={'text': 'textey'}
 		)
 
-		expected_error = escape("You've already got this in your list")
+		expected_error = escape(DUPLICATION_ITEM_ERROR)
 
 		self.assertContains(response, expected_error)
 		self.assertTemplateUsed(response, 'list.html')
