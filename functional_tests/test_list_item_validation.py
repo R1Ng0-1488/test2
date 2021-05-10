@@ -56,10 +56,8 @@ class ItemValidationTest(FunctionalTest):
 		'''тест: нельзя добавлять повторяющиеся элементы'''
 		# Edit opens a home page and starts a new list
 		self.browser.get(self.live_server_url)
-		self.get_item_input_box().send_keys('Buy wellies')
-		self.get_item_input_box().send_keys(Keys.ENTER)
-		self.wait_for_row_in_list_table('1: Buy wellies')
-
+		self.add_list_item('Buy wellies')
+		
 		# She accidentally tries input repeated element
 		self.get_item_input_box().send_keys('Buy wellies')
 		self.get_item_input_box().send_keys(Keys.ENTER)
@@ -74,9 +72,8 @@ class ItemValidationTest(FunctionalTest):
 		'''тест: сообщения об ошибках очищаются при вводе'''
 		# Edit starts a list and calls a validation error
 		self.browser.get(self.live_server_url)
-		self.get_item_input_box().send_keys('Banter too thick')
-		self.get_item_input_box().send_keys(Keys.ENTER)
-		self.wait_for_row_in_list_table('1: Banter too thick')
+		self.add_list_item('Banter too thick')
+	
 		self.get_item_input_box().send_keys('Banter too thick')
 		self.get_item_input_box().send_keys(Keys.ENTER)
 
