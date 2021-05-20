@@ -2,11 +2,16 @@ from selenium import webdriver
 from selenium.common.exceptions import WebDriverException
 from selenium.webdriver.common.keys import Keys
 from django.contrib.staticfiles.testing import StaticLiveServerTestCase
+from django.contrib.auth import BACKEND_SESSION_KEY, SESSION_KEY, get_user_model
+from django.contrib.sessions.backends.db import SessionStore
+from django.conf import settings
 
 import time
 import os
 import poplib
 
+
+User = get_user_model()
 
 MAX_WAIT = 10
 
@@ -109,3 +114,20 @@ class FunctionalTest(StaticLiveServerTestCase):
 		self.get_item_input_box().send_keys(Keys.ENTER)
 		item_number = num_rows + 1
 		self.wait_for_row_in_list_table(f'{item_number}: {item_text}')
+
+	def create_pre_authenticated_session(self, email):
+		'''создать предварительно аунтифицированный сеанс'''
+		user = User.objects.create(email=email)
+		session = SessionStore()
+		session[SESSION_KEY] = user.pk
+		session[BACKEND_SESSION_KEY] = settings.AUTHENTICATION_BACKENDS[0]
+		session.save()
+
+		## set cookie, which needs for the first domen visit
+		## 404 page is uploaded the fastes
+		self.browser.get(self.live_server_url + "/404_no_such_url/")
+		self.browser.add_cookie(dict(
+			name=settings.SESSION_COOKIE_NAME,
+			value=session.session_key,
+			path='/',
+		))

@@ -14,23 +14,6 @@ User = get_user_model()
 class MyListsTest(FunctionalTest):
 	'''тест приложения "Мои списки"'''
 
-	def create_pre_authenticated_session(self, email):
-		'''создать предварительно аунтифицированный сеанс'''
-		user = User.objects.create(email=email)
-		session = SessionStore()
-		session[SESSION_KEY] = user.pk
-		session[BACKEND_SESSION_KEY] = settings.AUTHENTICATION_BACKENDS[0]
-		session.save()
-
-		## set cookie, which needs for the first domen visit
-		## 404 page is uploaded the fastes
-		self.browser.get(self.live_server_url + "/404_no_such_url/")
-		self.browser.add_cookie(dict(
-			name=settings.SESSION_COOKIE_NAME,
-			value=session.session_key,
-			path='/',
-		))
-
 	def registred_instead_of_session(self, email):
 		'''регистрация вместо куки'''
 		self.browser.get(self.live_server_url)
