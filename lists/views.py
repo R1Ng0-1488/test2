@@ -53,3 +53,11 @@ def my_lists(request, email):
 	'''мои списки'''
 	owner = User.objects.get(email=email)
 	return render(request, 'my_lists.html', {'owner': owner})
+
+def share_list(request, list_id):
+	'''поделиться списком'''
+	list_ = List.objects.get(id=list_id)
+	if request.method == 'POST':
+		user = User.objects.get(email=request.POST.get('sharee'))
+		list_.shared_with.add(user)
+	return redirect(list_)

@@ -1,5 +1,8 @@
 from selenium import webdriver
+
 from .base import FunctionalTest
+from .list_page import ListPage
+from .my_lists_page import MyListsPage
 
 
 def quit_if_possible(browser):
@@ -25,14 +28,38 @@ class SharingTest(FunctionalTest):
 
 		# Edit opens a home page and starts a new list
 		self.browser = edith_browser
-		self.browser.get(self.live_server_url)
-		self.add_list_item('Get help')
+		list_page = ListPage(self).add_list_item('Get help')
+		
 
 		# She points out the option "Share this list"
-		share_box = self.browser.find_element_by_css_selector(
-			'input[name="sharee"]'
-		)		
-		self.asserEqual(
+		share_box = list_page.get_share_box() 
+		self.assertEqual(
 			share_box.get_attribute('placeholder'),
 			'your-friend@example.com'
 		)
+
+		# She shares her list
+		# The page refreshed and reports that
+		# now the page is used with Onicefer
+		list_page.share_list_with('temich.97@mail.ru')
+
+		# Onicefer goes to the lists page in his browser
+		self.browser = oni_browser
+		MyListsPage(self).go_to_my_lists_page()
+
+		# He sees Edit's list on it!
+		self.browser.find_element_by_link_text('Get help').click()
+
+		# On the page which Onicefer sees it says that this list is Edith's
+		self.wait_for(lambda: self.assertEqual(
+			list_page.get_list_owner(),
+			't1m.sadist@gmail.com'
+		))
+
+		# He adds an element to the list
+		list_page.add_list_item('Hi Edith!')
+
+		# When Edit refreshes the list she sees Onicefer's additional
+		self.browser = edith_browser
+		self.browser.refresh()
+		list_page.wait_for_row_in_list_table('Hi Edith!', 2)
